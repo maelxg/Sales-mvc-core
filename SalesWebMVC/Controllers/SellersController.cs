@@ -19,24 +19,27 @@ namespace SalesWebMVC.Controllers
         {
             _sellerService = sellerService;
         }
-
+        // Go to database and find all sellers and print on list
         public IActionResult Index()
         {
             var list = _sellerService.FindAll();
             return View(list);
         }
+        // Create a View
         public IActionResult Create()
         {
             return View();
         }
         // Load View sellers data and merge to database
-        [HttpPost] // Action POST
+        // POST: Departments/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
