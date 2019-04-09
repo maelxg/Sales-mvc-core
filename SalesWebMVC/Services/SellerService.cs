@@ -1,8 +1,6 @@
-﻿using System;
+﻿using SalesWebMVC.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using SalesWebMVC.Models;
 
 namespace SalesWebMVC.Services
 {
