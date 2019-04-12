@@ -31,7 +31,7 @@ namespace SalesWebMVC.Data
             Department d3 = new Department(3, "Fashion");
             Department d4 = new Department(4, "Books");
             // Create Sellers
-            Seller s1 = new Seller(1, "Bob Brown", "bob@gmail.com", new DateTime(1998, 4, 21), 1000.0, d1);
+            Seller s1 = new Seller(1, "Bob Brown", "bob@gmail.com", new DateTime(1998, 4, 21), 1000.0, d3);
             // Create Sales
             SalesRecord sr1 = new SalesRecord(1, new DateTime(2019, 04, 01), 1000.0, SaleStatus.Billed, s1);
             // Add objects on Database

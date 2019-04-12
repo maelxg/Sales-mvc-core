@@ -63,7 +63,7 @@ namespace SalesWebMVC.Controllers
             {
                 return NotFound();
             }
-            // Else, delete :(
+            // Else, goto page to delete :(
             return View(obj);
         }
 
@@ -74,5 +74,24 @@ namespace SalesWebMVC.Controllers
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
+
+        // Details page
+        // Create view
+        public IActionResult Details(int? Id)
+        {
+            if (Id == null) // Check faulty action
+            {
+                return NotFound();
+            }
+            // else, one more check
+            var obj = _sellerService.FindById(Id.Value);
+            if (obj == null) // Check if ID are a null value
+            {
+                return NotFound();
+            }
+            // Else, goto page detais
+            return View(obj);
+        }
+
     }
 }
