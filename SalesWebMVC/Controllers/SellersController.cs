@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
 
 namespace SalesWebMVC.Controllers
 {
@@ -77,14 +78,14 @@ namespace SalesWebMVC.Controllers
 
         // Details page
         // Create view
-        public IActionResult Details(int? Id)
+        public IActionResult Details(int? id)
         {
-            if (Id == null) // Check faulty action
+            if (id == null) // Check faulty action
             {
                 return NotFound();
             }
             // else, one more check
-            var obj = _sellerService.FindById(Id.Value);
+            var obj = _sellerService.FindById(id.Value);
             if (obj == null) // Check if ID are a null value
             {
                 return NotFound();
@@ -93,5 +94,47 @@ namespace SalesWebMVC.Controllers
             return View(obj);
         }
 
+        // Edit view
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+
+            return View(viewModel);
+        }
+
+        // POST: Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
