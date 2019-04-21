@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -56,13 +57,13 @@ namespace SalesWebMVC.Controllers
         {
             if (Id == null) // Check faulty action
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided." });
             }
             // else, one more check
             var obj = _sellerService.FindById(Id.Value);
             if (obj == null) // Check if ID are a null value
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not found." });
             }
             // Else, goto page to delete :(
             return View(obj);
@@ -82,13 +83,13 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null) // Check faulty action
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided." });
             }
             // else, one more check
             var obj = _sellerService.FindById(id.Value);
             if (obj == null) // Check if ID are a null value
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not found." });
             }
             // Else, goto page detais
             return View(obj);
@@ -99,12 +100,12 @@ namespace SalesWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not provided." });
             }
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "ID not found." });
             }
 
             List<Department> departments = _departmentService.FindAll();
@@ -118,23 +119,30 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if (id != seller.Id)
+            if (id != seller.Id) // If seller gives a null value, give a error
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "ID mismatch." });
             }
             try
             {
-                _sellerService.Update(seller);
-                return RedirectToAction(nameof(Index));
+                _sellerService.Update(seller); // Edit method
+                return RedirectToAction(nameof(Index)); // After sucess, go to index
             }
-            catch (NotFoundException)
+            catch (ApplicationException e) // Not found to avoid crash on application
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
+        }
+
+        // Error View
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
             {
-                return BadRequest();
-            }
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
