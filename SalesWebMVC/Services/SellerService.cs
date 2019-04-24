@@ -46,7 +46,7 @@ namespace SalesWebMVC.Services
                 _context.Seller.Remove(obj); // Remove on object
                 await _context.SaveChangesAsync(); // Save on database
             }
-            catch (DbUpdateException e)
+            catch (DbUpdateException)
             {
 
                 throw new IntegrityException("Can´t delete Seller, because he/she has a Sales.");
