@@ -39,15 +39,16 @@ namespace SalesWebMVC
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddDbContext<SalesWebMVCContext>(options =>
                     options.UseMySql(Configuration.GetConnectionString("SalesWebMVCContext"),
                     builder => builder.MigrationsAssembly("SalesWebMVC")));
                     // options.UseSqlServer(Configuration.GetConnectionString("SalesWebMVCContext"))); // Use this and delete above to use MSSQL and change appsettings.json
 
+            // Injection Dependecy
             services.AddScoped<SeedingService>();
             services.AddScoped<SellerService>();
             services.AddScoped<DepartmentService>();
+            services.AddScoped<SalesRecordService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
